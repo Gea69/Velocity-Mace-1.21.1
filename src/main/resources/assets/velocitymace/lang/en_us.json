@@ -5,6 +5,7 @@
   "death.attack.meteor_impact_recoil": "%1$s didn't stick the landing",
   "enchantment.velocitymace.yoink": "Yoink",
   "enchantment.velocitymace.yeet": "Yeet",
+  "enchantment.velocitymace.long_cast": "Long Cast",
 
   "itemGroup.examplemod": "Example Mod Tab",
   "block.examplemod.example_block": "Example Block",
