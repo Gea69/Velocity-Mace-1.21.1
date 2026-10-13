@@ -60,14 +60,7 @@ Yeet (Fishing Rod) (Group:) (I-III) (New):
 When reeling in a bobber that hooked a target or is stationarity, the wielder is pulled towards it. This enchantment disables the ability to pull hooked targets unless the fishing rod also has the enchantment Yoink.
 
 
+Long Cast (Fishing Rod) (Group:) (I-IV) (New):
 
-
-
-
-
-
-
-
-
-
+Gives a 50% more force per level to casting the bobber, and 125% increased maximum line distance per level.
 
