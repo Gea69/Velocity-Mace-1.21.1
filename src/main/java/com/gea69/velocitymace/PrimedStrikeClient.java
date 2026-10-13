@@ -104,7 +104,6 @@ public final class PrimedStrikeClient {
 
         /*
          * Minecraft's FoV Effects option scales the strength of this effect:
-         * 0 disables it, 1 applies the full Primed Strike zoom.
          */
         double fovEffectScale = minecraft.options.fovEffectScale().get();
         double effectiveStrength = currentFovStrength
