@@ -3,6 +3,7 @@
   "enchantment.velocitymace.shockwave": "Shockwave",
   "enchantment.velocitymace.meteor_impact": "Meteor Impact",
   "death.attack.meteor_impact_recoil": "%1$s didn't stick the landing",
+  "enchantment.velocitymace.yoink": "Yoink",
 
   "itemGroup.examplemod": "Example Mod Tab",
   "block.examplemod.example_block": "Example Block",

@@ -1,0 +1,23 @@
+
+{
+  "description": {
+    "translate": "enchantment.velocitymace.yoink"
+  },
+  "supported_items": "#minecraft:enchantable/fishing",
+  "primary_items": "#minecraft:enchantable/fishing",
+  "weight": 2,
+  "max_level": 3,
+  "min_cost": {
+    "base": 5,
+    "per_level_above_first": 8
+  },
+  "max_cost": {
+    "base": 15,
+    "per_level_above_first": 8
+  },
+  "anvil_cost": 4,
+  "slots": [
+    "mainhand"
+  ],
+  "effects": {}
+}
