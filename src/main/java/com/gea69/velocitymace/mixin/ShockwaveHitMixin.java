@@ -1,7 +1,8 @@
+
 package com.gea69.velocitymace.mixin;
 
-import com.gea69.velocitymace.ShockwaveAttackContext;
 import com.gea69.velocitymace.ShockwaveHandler;
+import com.gea69.velocitymace.VelocityMaceAttackContext;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,34 +23,36 @@ public abstract class ShockwaveHitMixin {
             float amount,
             CallbackInfoReturnable<Boolean> cir
     ) {
-        LivingEntity target =
-                (LivingEntity) (Object) this;
+        LivingEntity target = (LivingEntity) (Object) this;
 
         if (target.level().isClientSide()) {
             return;
         }
 
-        Entity attacker =
-                damageSource.getEntity();
+        Entity attacker = damageSource.getEntity();
 
         if (attacker == null) {
             return;
         }
 
-        ShockwaveAttackContext.Hit hit =
-                ShockwaveAttackContext.consume(
+        VelocityMaceAttackContext.ShockwaveHit hit =
+                VelocityMaceAttackContext.consumeShockwaveHit(
                         target,
                         attacker
                 );
 
-        if (hit == null) {
+        if (hit == null || !cir.getReturnValue()) {
             return;
         }
 
-        if (!cir.getReturnValue()) {
-            return;
-        }
-
-        ShockwaveHandler.apply(hit);
+        ShockwaveHandler.apply(
+                new com.gea69.velocitymace.ShockwaveAttackContext.Hit(
+                        hit.attacker(),
+                        hit.target(),
+                        hit.damageSource(),
+                        hit.preDefenseDamage(),
+                        hit.enchantmentLevel()
+                )
+        );
     }
 }

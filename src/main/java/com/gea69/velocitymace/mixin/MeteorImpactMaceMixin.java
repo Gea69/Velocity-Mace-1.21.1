@@ -2,7 +2,7 @@
 package com.gea69.velocitymace.mixin;
 
 import com.gea69.velocitymace.MeteorImpact;
-import com.gea69.velocitymace.MeteorImpactAttackContext;
+import com.gea69.velocitymace.VelocityMaceAttackContext;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -44,10 +44,6 @@ public abstract class MeteorImpactMaceMixin {
             return;
         }
 
-        /*
-         * Match Shockwave's pre-defense damage calculation:
-         * incoming attack damage + the mace's smash bonus.
-         */
         float preDefenseDamage = damage + cir.getReturnValue();
 
         if (preDefenseDamage <= 0.0F
@@ -64,7 +60,7 @@ public abstract class MeteorImpactMaceMixin {
             return;
         }
 
-        MeteorImpactAttackContext.set(
+        VelocityMaceAttackContext.setMeteorImpactHit(
                 attacker,
                 target,
                 speed,

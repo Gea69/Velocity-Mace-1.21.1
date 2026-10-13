@@ -1,7 +1,8 @@
+
 package com.gea69.velocitymace.mixin;
 
 import com.gea69.velocitymace.Shockwave;
-import com.gea69.velocitymace.ShockwaveAttackContext;
+import com.gea69.velocitymace.VelocityMaceAttackContext;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,18 +30,14 @@ public abstract class ShockwaveMaceMixin {
             return;
         }
 
-        Entity attacker =
-                damageSource.getEntity();
+        Entity attacker = damageSource.getEntity();
 
         if (!(attacker instanceof LivingEntity livingAttacker)) {
             return;
         }
 
-        ItemStack weapon =
-                damageSource.getWeaponItem();
-
-        int level =
-                Shockwave.getLevel(weapon);
+        ItemStack weapon = damageSource.getWeaponItem();
+        int level = Shockwave.getLevel(weapon);
 
         if (level <= 0) {
             return;
@@ -50,20 +47,14 @@ public abstract class ShockwaveMaceMixin {
             return;
         }
 
-        /*
-         * The return value is the mace's smash bonus.
-         * Add it to the incoming base damage to capture
-         * the smash hit's pre-defense damage.
-         */
-        float preDefenseDamage =
-                damage + cir.getReturnValue();
+        float preDefenseDamage = damage + cir.getReturnValue();
 
         if (preDefenseDamage <= 0.0F
                 || !Float.isFinite(preDefenseDamage)) {
             return;
         }
 
-        ShockwaveAttackContext.set(
+        VelocityMaceAttackContext.setShockwaveHit(
                 attacker,
                 target,
                 damageSource,
