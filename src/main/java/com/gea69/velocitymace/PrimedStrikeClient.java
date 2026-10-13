@@ -23,142 +23,113 @@ public final class PrimedStrikeClient {
     private static final double PRIMED_FOV_MULTIPLIER = 0.85D;
 
     /*
-     * True only while:
-     *
-     * - the player has a Primed Strike mace equipped
-     * - the attack key is held
-     * - the mace is not on cooldown
+     * Controls how quickly the FOV approaches its current target.
+     * A time-based interpolation keeps the transition consistent
+     * across different frame rates.
      */
+    private static final double FOV_TRANSITION_SECONDS = 0.12D;
+
     private static boolean primed = false;
+    private static double currentFovStrength = 0.0D;
+    private static long lastFovUpdateNanos = 0L;
 
     private PrimedStrikeClient() {
     }
 
     @SubscribeEvent
-    public static void onClientTick(
-            ClientTickEvent.Post event
-    ) {
-        Minecraft minecraft =
-                Minecraft.getInstance();
+    public static void onClientTick(ClientTickEvent.Post event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        LocalPlayer player = minecraft.player;
 
-        LocalPlayer player =
-                minecraft.player;
-
-        /*
-         * Reset the primed state whenever there is no
-         * usable client player/world.
-         */
-        if (player == null || minecraft.level == null) {
+        if (!canPrime(minecraft, player)) {
             primed = false;
             return;
         }
 
-        /*
-         * Do not maintain the primed state while a GUI is open.
-         */
-        if (minecraft.screen != null) {
-            primed = false;
-            return;
-        }
-
-        ItemStack weapon =
-                player.getMainHandItem();
-
-        int level =
-                PrimedStrike.getLevel(weapon);
-
-        /*
-         * Primed Strike is not active unless the current
-         * main-hand item actually has the enchantment.
-         */
-        if (level <= 0) {
-            primed = false;
-            return;
-        }
-
-        /*
-         * The attack key controls the primed state.
-         */
-        if (!minecraft.options.keyAttack.isDown()) {
-            primed = false;
-            return;
-        }
-
-        /*
-         * Cooldown prevents the mace from being primed again.
-         */
-        if (player.getCooldowns().isOnCooldown(
-                weapon.getItem()
-        )) {
-            primed = false;
-            return;
-        }
-
-        /*
-         * At this point the mace is genuinely primed:
-         *
-         *   Primed Strike mace
-         *   + LMB held
-         *   + cooldown inactive
-         */
+        ItemStack weapon = player.getMainHandItem();
+        int level = PrimedStrike.getLevel(weapon);
         primed = true;
 
-        double range =
-                player.getAttributeValue(
-                        Attributes.ENTITY_INTERACTION_RANGE
-                )
-                        + PrimedStrike.getAdditionalRange(level);
+        double range = player.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE)
+                + PrimedStrike.getAdditionalRange(level);
 
-        Entity target =
-                PrimedStrikeTargeting.findTarget(
-                        player,
-                        range
-                );
-
+        Entity target = PrimedStrikeTargeting.findTarget(player, range);
         if (target == null) {
             return;
         }
 
-        /*
-         * Play the normal mace attack animation immediately on the client.
-         */
-        player.swing(
-                InteractionHand.MAIN_HAND
-        );
+        player.swing(InteractionHand.MAIN_HAND);
+        PrimedStrikeNetworkClient.fire(target.getId());
 
-        PrimedStrikeNetworkClient.fire(
-                target.getId()
-        );
-
-        /*
-         * Start the local five-second cooldown immediately.
-         */
-        player.getCooldowns().addCooldown(
-                weapon.getItem(),
-                COOLDOWN_TICKS
-        );
-
-        /*
-         * The attack has fired, so it is no longer primed.
-         */
+        player.getCooldowns().addCooldown(weapon.getItem(), COOLDOWN_TICKS);
         primed = false;
     }
 
     @SubscribeEvent
-    public static void onComputeFov(
-            ViewportEvent.ComputeFov event
-    ) {
+    public static void onComputeFov(ViewportEvent.ComputeFov event) {
+        Minecraft minecraft = Minecraft.getInstance();
+
         /*
-         * Only narrow the FOV while the mace is actually
-         * in the primed state.
+         * Re-check the live equipment and input state while rendering.
+         * This avoids retaining an ItemStack reference and makes the zoom
+         * start returning to normal if the mace disappears, is swapped out,
+         * a GUI opens, or the cooldown starts.
          */
-        if (!primed) {
-            return;
+        boolean shouldZoom = canPrime(minecraft, minecraft.player) && primed;
+        double targetStrength = shouldZoom ? 1.0D : 0.0D;
+
+        long now = System.nanoTime();
+        if (lastFovUpdateNanos == 0L) {
+            lastFovUpdateNanos = now;
         }
 
-        event.setFOV(
-                event.getFOV()
-                        * PRIMED_FOV_MULTIPLIER
+        double elapsedSeconds = Math.max(
+                0.0D,
+                (now - lastFovUpdateNanos) / 1_000_000_000.0D
         );
+        lastFovUpdateNanos = now;
+
+        /*
+         * Exponential interpolation is smooth and frame-rate independent.
+         * Clamp large pauses so returning from a pause or lag spike does
+         * not cause an abrupt jump.
+         */
+        elapsedSeconds = Math.min(elapsedSeconds, 0.05D);
+        double blend = 1.0D - Math.exp(-elapsedSeconds / FOV_TRANSITION_SECONDS);
+        currentFovStrength += (targetStrength - currentFovStrength) * blend;
+
+        if (Math.abs(targetStrength - currentFovStrength) < 0.001D) {
+            currentFovStrength = targetStrength;
+        }
+
+        /*
+         * Minecraft's FoV Effects option scales the strength of this effect:
+         * 0 disables it, 1 applies the full Primed Strike zoom.
+         */
+        double fovEffectScale = minecraft.options.fovEffectScale().get();
+        double effectiveStrength = currentFovStrength
+                * Math.max(0.0D, Math.min(1.0D, fovEffectScale));
+
+        double multiplier = 1.0D
+                - ((1.0D - PRIMED_FOV_MULTIPLIER) * effectiveStrength);
+
+        event.setFOV(event.getFOV() * multiplier);
+    }
+
+    private static boolean canPrime(Minecraft minecraft, LocalPlayer player) {
+        if (player == null || minecraft.level == null || minecraft.screen != null) {
+            return false;
+        }
+
+        if (!minecraft.options.keyAttack.isDown()) {
+            return false;
+        }
+
+        ItemStack weapon = player.getMainHandItem();
+        if (weapon.isEmpty() || PrimedStrike.getLevel(weapon) <= 0) {
+            return false;
+        }
+
+        return !player.getCooldowns().isOnCooldown(weapon.getItem());
     }
 }
