@@ -14,7 +14,8 @@
     "ShockwaveHitMixin",
     "MeteorImpactMaceMixin",
     "MeteorImpactHitMixin",
-    "YoinkFishingHookMixin"
+    "YoinkFishingHookMixin",
+    "YeetFishingHookMixin"
   ],
   "client": [
     "MinecraftMixin",

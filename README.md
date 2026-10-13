@@ -13,19 +13,19 @@ The original function when landing a smash set your Y movement to 0.01, which st
 
 Mace enchantments:
 
-Density (Group:A) (I-V) (Small change):
+Density (Mace) (Group:A) (I-V) (Small change):
 
 Instead of giving 0.5 x lvl x FallDistance damage bonus, it now works with the relative velocity. It's still just a raw damage buff, but it doesn't scale with the weapon's base damage, making it less valuable on already high powered mod maces.
 Mutually exclusive with Shockwave and Meteor Impact
 
 
-Shockwave (Group:A) (I-IV) (New):
+Shockwave (Mace) (Group:A) (I-IV) (New):
 
 Deals 25% x lvl of the smash attack's damage to everything in the smash knockback radius except the attacker and target.
 Mutually exclusive with Density and Meteor Impact
 
 
-Meteor Impact (Group:A) (I-V) (New):
+Meteor Impact (Mace) (Group:A) (I-V) (New):
 
 On a smash attack, create an explosion and take recoil, both scaled from relative velocity as a percentage of their max from 0 b/s to 100 b/s. The max explosion power is 6(end crystal or charged creeper), and the max damage is 300% of smash that triggered it. The explosion effect does not hit the attacker, but there is recoil damage, with a minimum of 1 damage, and a max at 100 b/s of 100% of the attacker's max health -1.
 The first level of the Meteor Impact provides no recoil reduction, but levels 2 through 5 can give a max of 25% reduction for each level if you meet the defense cap.
@@ -34,17 +34,40 @@ Each level after the first provides a maximum of 18.75%, 37.5%, 56.25%, or 75% r
 Mutually exclusive with Density and Shockwave
 
 
-Breach (Group:B) (I-IV) (Big change):
+Breach (Mace) (Group:B) (I-IV) (Big change):
 
 Smash attacks ignore a percentage of enemy armor protection equal to the relative velocity capped by the enchantment's level at 33% at lvl 1, 66% at lvl 2 and 100% at lvl 3.
 Level 4 of the enchantment retains the cap of 100% armor penetration, but also give a percentile damage bonus against armored targets calculated as [armor * 2 - armor toughness]
 
 
-Wind Burst (Group:B) (I-III) (Big change):
+Wind Burst (Mace) (Group:B) (I-III) (Big change):
 
 Wind Burst still gains the same amount of force with levels, but now has different functions gated at levels as well. At level 1, a smash attack while sprinting, riding, swimming, or crawling(just in case), the target of the attack is thrown away, separate and stacking with knockback. At level 2, the enchantment gains the vanilla attacker launch, but for it to activate the attacker must not be sprinting, riding, swimming, crawling, gliding, or flying. At level 3, the enchantment gains the ability to work while elytra gliding, splitting the force equally between straight up and the attacker's current movement direction(Try swooping down and hitting your target while moving parallel with the ground!).
 
 
-Primed Strike (Group:B) (I-V) (New)
+Primed Strike (Mace) (Group:B) (I-V) (New):
 
 Primed Strike holds the mace primed(and narrows the FoV) when attack button is held, and automatically swings when there is a valid target in range under the attacker's aim, and then causes all maces to go on a cooldown that blocks all Primed Strike maces from attacking. Levels 2 to 5 each also give +0.5 blocks of attack range each.
+
+
+Yoink (Fishing Rod) (Group:) (I-III) (New):
+
+When reeling in a hooked target, give them a bit of up force, then pull them to the wielder with a force based on enchantment level.
+
+
+Yeet (Fishing Rod) (Group:) (I-III) (New):
+
+When reeling in a bobber that hooked a target or is stationarity, the wielder is pulled towards it. This enchantment disables the ability to pull hooked targets unless the fishing rod also has the enchantment Yoink.
+
+
+
+
+
+
+
+
+
+
+
+
+
