@@ -120,8 +120,7 @@ public final class PrimedStrikeClient {
         }
 
         /*
-         * Play the normal mace attack animation immediately
-         * on the client.
+         * Play the normal mace attack animation immediately on the client.
          */
         player.swing(
                 InteractionHand.MAIN_HAND
