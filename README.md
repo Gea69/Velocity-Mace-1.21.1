@@ -64,3 +64,7 @@ Long Cast (Fishing Rod) (Group:) (I-IV) (New):
 
 Gives a 50% more force per level to casting the bobber, and 125% increased maximum line distance per level.
 
+
+Sticky Bobber (Fishing Rod) (Group:) (I) (New)
+
+The bobber sticks to blocks on contact.

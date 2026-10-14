@@ -16,7 +16,8 @@
     "MeteorImpactHitMixin",
     "YoinkFishingHookMixin",
     "YeetFishingHookMixin",
-    "LongCastFishingHookMixin"
+    "LongCastFishingHookMixin",
+    "StickyBobberFishingHookMixin"
   ],
   "client": [
     "MinecraftMixin",
