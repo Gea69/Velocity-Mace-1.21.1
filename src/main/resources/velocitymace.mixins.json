@@ -19,6 +19,7 @@
     "LongCastFishingHookMixin",
     "StickyBobberFishingHookMixin"
   ],
+
   "client": [
     "MinecraftMixin",
     "CreativeModeTabsMixin"
